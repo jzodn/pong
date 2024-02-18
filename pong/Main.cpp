@@ -53,19 +53,17 @@ public:
     }
 
     void move(Paddle paddle0, Paddle paddle1) {
-        if (boundingBox.intersects(paddle0.boundingBox)) {
-            angle = (paddle0.paddle.getPosition().y - ball.getPosition().y) / 124;
-            angle = angle * 90;
+        //if (boundingBox.intersects(paddle0.boundingBox)) {
+        //    angle = (paddle0.paddle.getPosition().y - ball.getPosition().y) / 124;
+        //    angle = angle * 80;
 
-            velocity = -velocity;
-        } else if (boundingBox.intersects(paddle1.boundingBox)) {
-            angle = (paddle1.paddle.getPosition().y - ball.getPosition().y) / 124;
-            angle = angle * 90;
+        //    velocity = -velocity;
+        //} else if (boundingBox.intersects(paddle1.boundingBox)) {
+        //    angle = (paddle1.paddle.getPosition().y - ball.getPosition().y) / 124;
+        //    angle = angle * 80;
 
-            printf("%f\n", angle);
-
-            velocity = -velocity;
-        }
+        //    velocity = -velocity;
+        //}
 
         ball.move(cos(angle)*velocity, tan(angle)*velocity);
 
