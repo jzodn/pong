@@ -1,15 +1,23 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 #include <iostream>
+#include <format>
+
+#define PI 3.14159
 
 struct Paddle {
     sf::RectangleShape paddle;
     sf::FloatRect boundingBox;
+    int index;
+    int score;
 
-    Paddle(float x) {
+    Paddle(float x, int index) {
         paddle.setSize(sf::Vector2f(20.f, 124.f));
         paddle.setOrigin(10.f, 62.f);
         paddle.setPosition(x, 300.f);
+
+        this->index = index;
+        score = 0;
 
         boundingBox = paddle.getGlobalBounds();
     }
@@ -52,31 +60,68 @@ public:
         angle = 0;
     }
 
-    void move(Paddle paddle0, Paddle paddle1) {
-        //if (boundingBox.intersects(paddle0.boundingBox)) {
-        //    angle = (paddle0.paddle.getPosition().y - ball.getPosition().y) / 124;
-        //    angle = angle * 80;
+    void move(Paddle& paddle0, Paddle& paddle1) {
+        if (boundingBox.intersects(paddle0.boundingBox)) {
+            handlePaddleCollision(paddle0);
+        }
+        else if (boundingBox.intersects(paddle1.boundingBox)) {
+            handlePaddleCollision(paddle1);
+        }
+        else if (ball.getPosition().y > 600 || ball.getPosition().y < 0) {
+            angle = -angle;
+        }
+        else if (ball.getPosition().x > 1000) {
+            paddle0.score++;
+            resetBall(1);
+        }
+        else if (ball.getPosition().x < 0) {
+            paddle1.score++;
+            resetBall(0);
+        }
 
-        //    velocity = -velocity;
-        //} else if (boundingBox.intersects(paddle1.boundingBox)) {
-        //    angle = (paddle1.paddle.getPosition().y - ball.getPosition().y) / 124;
-        //    angle = angle * 80;
-
-        //    velocity = -velocity;
-        //}
-
-        ball.move(cos(angle)*velocity, tan(angle)*velocity);
+        ball.move(cos(angle) * velocity, tan(angle) * velocity);
 
         boundingBox = ball.getGlobalBounds();
     }
+
+private:
+    void handlePaddleCollision(Paddle paddle) {
+        float relativeIntersectY = (paddle.paddle.getPosition().y - ball.getPosition().y) / paddle.paddle.getSize().y;
+        angle = relativeIntersectY * (-PI / 2) + (paddle.index == 1 ? PI : 0);
+    }
+
+    void resetBall(int direction) {
+        ball.setPosition(500.f, 300.f);
+        angle = PI * direction;
+    }
 };
-    
+
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(1000, 600), "Pong!");
 
-    Paddle paddle0(50.f);
-    Paddle paddle1(950.f);
+    sf::Font font;
+    if (!font.loadFromFile("./arial.ttf")) {
+        printf("ERROR");
+    }
+
+    sf::Text score0;
+    sf::Text score1;
+
+    score0.setCharacterSize(30);
+    score0.setFillColor(sf::Color::White);
+    score0.setFont(font);
+    score0.setPosition(50.f, 50.f);
+    score0.setStyle(sf::Text::Bold);
+
+    score1.setCharacterSize(30);
+    score1.setFillColor(sf::Color::White);
+    score1.setFont(font);
+    score1.setPosition(800.f, 50.f);
+    score1.setStyle(sf::Text::Bold);
+
+    Paddle paddle0(50.f, 0);
+    Paddle paddle1(950.f, 1);
 
     Ball ball;
 
@@ -107,10 +152,15 @@ int main() {
 
         ball.move(paddle0, paddle1);
 
+        score0.setString("Player 1: " + std::to_string(paddle0.score));
+        score1.setString("Player 2: " + std::to_string(paddle1.score));
+
         window.clear();
         window.draw(paddle0.paddle);
         window.draw(paddle1.paddle);
         window.draw(ball.ball);
+        window.draw(score0);
+        window.draw(score1);
         window.display();
     }
 
