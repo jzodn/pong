@@ -18,7 +18,7 @@ void Menu::set_values() {
 
 	font->loadFromFile("./arial.ttf");
 
-	pos = 0;
+	pos = 1;
 	pressed = theselect = false;
 
 	pos_mouse = { 0, 0 };
@@ -37,6 +37,8 @@ void Menu::set_values() {
 		texts[i].setOutlineColor(sf::Color::Blue);
 		texts[i].setPosition(coords[i]);
 	}
+
+	texts[pos].setOutlineThickness(4);
 }
 
 void Menu::loop_events() {
@@ -98,4 +100,8 @@ void Menu::run_menu() {
 		loop_events();
 		render();
 	}
+}
+
+int Menu::get_pos() {
+	return pos;
 }

@@ -23,6 +23,7 @@ class Menu {
 
 public:
 	Menu();
+	int get_pos();
 	~Menu();
 	void run_menu();
 

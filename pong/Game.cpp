@@ -13,7 +13,7 @@ Paddle::Paddle(float x, int index) {
 
 void Paddle::moveUp() {
     if (paddle.getPosition().y > 62.f) {
-        paddle.move(0.f, -10.f);
+        paddle.move(0.f, -5.f);
     }
 
     boundingBox = paddle.getGlobalBounds();
@@ -21,7 +21,7 @@ void Paddle::moveUp() {
 
 void Paddle::moveDown() {
     if (paddle.getPosition().y < 538.f) {
-        paddle.move(0.f, 10.f);
+        paddle.move(0.f, 5.f);
     }
 
     boundingBox = paddle.getGlobalBounds();
@@ -118,25 +118,25 @@ void Game::set_values() {
 void Game::loop_events() {
     sf::Event event;
 
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        paddles[0]->moveUp();
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        paddles[0]->moveDown();
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        paddles[1]->moveUp();
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        paddles[1]->moveDown();
+    }
+
     while (window->pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             window->close();
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            paddles[0]->moveUp();
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            paddles[0]->moveDown();
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            paddles[1]->moveUp();
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            paddles[1]->moveDown();
         }
     }
 }
