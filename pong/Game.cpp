@@ -134,6 +134,10 @@ void Game::loop_events() {
         paddles[1]->moveDown();
     }
 
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+        window->close();
+    }
+
     while (window->pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             window->close();
